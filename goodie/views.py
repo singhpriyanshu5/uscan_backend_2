@@ -75,6 +75,12 @@ def register(request):
         return HttpResponse("post request!!")
     return HttpResponse("not post request!!")
 
+def deleteMatric(request):
+    if request.method == "POST":
+        print "request body is: "+request.body
+        return HttpResponse("post request for delete!!")
+    return HttpResponse("not post request for delete!!")
+
 # def register(request, matric_number, event):
 #
 #     matric_number = matric_number.upper()
