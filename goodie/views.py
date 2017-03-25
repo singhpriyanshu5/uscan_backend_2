@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import Http404
@@ -67,11 +68,11 @@ def manual_register(request,event):
             return render(request, 'input.html', {'form': form, 'success': success, 'matric': matric, 'reason':fail_reason})
     return render(request, 'input.html', {'form': form,})
 
-@csrf_excempt
+
 def register(request):
     if request.method == "POST":
         print "request body is: "+request.body
-        HttpResponse("post request!!")
+        return HttpResponse("post request!!")
     return HttpResponse("not post request!!")
 
 # def register(request, matric_number, event):

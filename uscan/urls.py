@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-
+from django.views.decorators.csrf import csrf_exempt
 from goodie import views
 
 urlpatterns = [
@@ -25,6 +25,6 @@ urlpatterns = [
     url(r'^check/(?P<event_code>\w+)/', views.check_event),
     url(r'^manual/(?P<event>\w+)/',views.manual_register, name='manualregister'),
     # url(r'^register/(?P<event>\w+)/(?P<matric_number>\w+)', views.register, name='register'),
-    url(r'^register/)', views.register, name='register'),
+    url(r'^register/', csrf_exempt(views.register), name='register'),
     url(r'^list/(?P<event>\w+)/', views.list_matric),
 ]
