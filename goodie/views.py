@@ -67,22 +67,28 @@ def manual_register(request,event):
             return render(request, 'input.html', {'form': form, 'success': success, 'matric': matric, 'reason':fail_reason})
     return render(request, 'input.html', {'form': form,})
 
+@csrf_excempt
+def register(request):
+    if request.method == "POST":
+        print "request body is: "+request.body
+        HttpResponse("post request!!")
+    return HttpResponse("not post request!!")
 
-def register(request, matric_number, event):
-
-    matric_number = matric_number.upper()
-    try:
-        Event.objects.get(code= event)
-    except Event.DoesNotExist:
-        return HttpResponse(json.dumps({"flag": False, "message": "Invalid event code"}))
-
-    try:
-        Goodie.objects.get(matric=matric_number,event= Event.objects.get(code=event))
-    except Goodie.DoesNotExist:
-        if not re.match(Event.objects.get(code=event).regex, matric_number):
-            return HttpResponse(json.dumps({"flag": False, "message": "Invalid matric for this event"}))
-        tmp = Goodie(matric=matric_number, event= Event.objects.get(code=event), time=timezone.now())
-        tmp.save()
-        return HttpResponse(json.dumps({"flag": True, "message": 'New input success! matric : {0} , event : {1}'.format(matric_number,Event.objects.get(code=event).title)}));
-
-    return HttpResponse(json.dumps({"flag": False, "message": 'This matric is already registered for this event'}))
+# def register(request, matric_number, event):
+#
+#     matric_number = matric_number.upper()
+#     try:
+#         Event.objects.get(code= event)
+#     except Event.DoesNotExist:
+#         return HttpResponse(json.dumps({"flag": False, "message": "Invalid event code"}))
+#
+#     try:
+#         Goodie.objects.get(matric=matric_number,event= Event.objects.get(code=event))
+#     except Goodie.DoesNotExist:
+#         if not re.match(Event.objects.get(code=event).regex, matric_number):
+#             return HttpResponse(json.dumps({"flag": False, "message": "Invalid matric for this event"}))
+#         tmp = Goodie(matric=matric_number, event= Event.objects.get(code=event), time=timezone.now())
+#         tmp.save()
+#         return HttpResponse(json.dumps({"flag": True, "message": 'New input success! matric : {0} , event : {1}'.format(matric_number,Event.objects.get(code=event).title)}));
+#
+#     return HttpResponse(json.dumps({"flag": False, "message": 'This matric is already registered for this event'}))
