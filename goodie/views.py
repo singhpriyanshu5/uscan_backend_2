@@ -71,8 +71,10 @@ def manual_register(request,event):
 
 def register(request):
     if request.method == "POST":
-        matric_number = request.body.matric.upper()
-        event = request.body.event
+	request_json = json.loads(request.body)
+	#print request_json
+        matric_number = request_json['matric'].upper()
+        event = request_json['event']
         print "request matric number is: "+matric_number
         print "request event is: "+event
 
