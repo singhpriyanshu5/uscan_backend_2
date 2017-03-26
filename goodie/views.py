@@ -71,9 +71,28 @@ def manual_register(request,event):
 
 def register(request):
     if request.method == "POST":
-        print "request body is: "+request.body
-        return HttpResponse("post request!!")
-    return HttpResponse("not post request!!")
+        matric_number = request.body.matric.upper()
+        event = request.body.event
+        print "request matric number is: "+matric_number
+        print "request event is: "+event
+
+        try:
+            Event.objects.get(code= event)
+        except Event.DoesNotExist:
+            return HttpResponse(json.dumps({"flag": False, "message": "Invalid event code"}))
+
+        try:
+            Goodie.objects.get(matric=matric_number,event= Event.objects.get(code=event))
+        except Goodie.DoesNotExist:
+            # if not re.match(Event.objects.get(code=event).regex, matric_number):
+            #     return HttpResponse(json.dumps({"flag": False, "message": "Invalid matric for this event"}))
+            tmp = Goodie(matric=matric_number, event= Event.objects.get(code=event), time=timezone.now())
+            tmp.save()
+            return HttpResponse(json.dumps({"flag": True, "message": 'New input success! matric : {0} , event : {1}'.format(matric_number,Event.objects.get(code=event).title)}));
+
+        return HttpResponse(json.dumps({"flag": False, "message": 'This matric is already registered for this event'}))
+
+    return HttpResponse("did not get a post request!!")
 
 def deleteMatric(request):
     if request.method == "POST":
