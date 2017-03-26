@@ -26,19 +26,36 @@ def check_event(request,event_code):
     return HttpResponse(json.dumps(return_object))
 
 
-def list_matric(request,event):
-    try:
-        event = Event.objects.get(code=event)
-    except Event.DoesNotExist:
-        return HttpResponse('false')
+# def list_matric(request,event):
+#     try:
+#         event = Event.objects.get(code=event)
+#     except Event.DoesNotExist:
+#         return HttpResponse('false')
+#
+#     register_entries = Goodie.objects.filter(event=event)
+#
+#     matric_list = []
+#     for entry in register_entries:
+#         matric_list.append({'matric': entry.matric, 'time':entry.time.strftime('%a %b %d %H:%M:%S %Y')})
+#
+#     return HttpResponse(json.dumps(matric_list))
 
-    register_entries = Goodie.objects.filter(event=event)
+def list_matric(request):
+    if reqeust.method=="POST":
+        event = json.loads(request.body)['event']
+        try:
+            event = Event.objects.get(code=event)
+        except Event.DoesNotExist:
+            return HttpResponse('false')
 
-    matric_list = []
-    for entry in register_entries:
-        matric_list.append({'matric': entry.matric, 'time':entry.time.strftime('%a %b %d %H:%M:%S %Y')})
+        register_entries = Goodie.objects.filter(event=event)
 
-    return HttpResponse(json.dumps(matric_list))
+        matric_list = []
+        for entry in register_entries:
+            matric_list.append({'matric': entry.matric, 'time':entry.time.strftime('%a %b %d %H:%M:%S %Y')})
+
+        return HttpResponse(json.dumps(matric_list))
+
 
 
 def manual_register(request,event):
@@ -113,6 +130,7 @@ def deleteMatric(request):
 
         goodie.delete()
         print "goodie with matric number: "+matric_number+" and event code: "+event+" deleted"
+        return HttpResponse(json.dumps({"flag": True, "message": "goodie with matric number: "+matric_number+" and event code: "+event+" deleted"}))
     return HttpResponse("did not get a post reqeust for delete!")
 
 # def register(request, matric_number, event):

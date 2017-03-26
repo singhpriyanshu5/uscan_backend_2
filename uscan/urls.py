@@ -25,5 +25,7 @@ urlpatterns = [
     url(r'^manual/(?P<event>\w+)/',views.manual_register, name='manualregister'),
     url(r'^register/', csrf_exempt(views.register), name='register'),
     url(r'^deleteMatric/', csrf_exempt(views.deleteMatric), name='deleteMatric'),
-    url(r'^list/(?P<event>\w+)/', views.list_matric),
+    # url(r'^list/(?P<event>\w+)/', views.list_matric),
+    url(r'^list/', views.list_matric),
+
 ]
