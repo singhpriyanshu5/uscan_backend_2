@@ -94,13 +94,26 @@ def register(request):
 
         return HttpResponse(json.dumps({"flag": False, "message": 'This matric is already registered for this event'}))
 
-    return HttpResponse("did not get a post request!!")
+    return HttpResponse("did not get a post request for register!")
 
 def deleteMatric(request):
     if request.method == "POST":
-        print "request body is: "+request.body
-        return HttpResponse("post request for delete!!")
-    return HttpResponse("not post request for delete!!")
+        reqeust_json = json.loads(request.body)
+        matric_number = reqeust_json['matric'].upper()
+        event = reqeust_json['event']
+        try:
+            Event.objects.get(code=event)
+        except Event.DoesNotExist:
+            return HttpResponse(json.dumps({"flag": False, "message": "Invalid event code"}))
+
+        try:
+            goodie = Goodie.objects.get(matric=matric_number, event=Event.objects.get(code=event))
+        except Goodie.DoesNotExist:
+            return HttpResponse("Matric number to be deleted does not even exist!")
+
+        goodie.delete()
+        print "goodie with matric number: "+matric_number+" and event code: "+event+" deleted"
+    return HttpResponse("did not get a post reqeust for delete!")
 
 # def register(request, matric_number, event):
 #
